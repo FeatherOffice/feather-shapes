@@ -93,7 +93,7 @@ arquivo citados são os de origem no `featherslide-core`; hoje `formas.rs` é
   e explosões (2), matemáticas (6) e botões de ação (4). Conectores reto,
   cotovelo e curvo que seguem as formas, desenho livre, as 5 operações
   booleanas (União, Interseção, Subtração, Combinação, Fragmentação, até 16
-  formas) e WordArt com 4 transformações (Reto, Arco, Onda, Inclinado).
+  formas) e WordArt com 4 transformações (Reto, Arco, Onda, Inclinado) e 4 estilos prontos (Sólido, Contornado, Dourado, Rosa; `wordart::ESTILOS`).
   O menu tem 79 entradas.
 - **Ajustes.** Só o Setor (ângulos) e os retângulos (raio por canto) leem
   `ajustes`. As demais formas ainda não têm alças.
@@ -1056,7 +1056,7 @@ Os testes puros migraram do `featherslide-core` junto com o código (v0.1.0):
 | `booleanas.rs` | 3 | as 5 operações, furos, interseção vazia e regiões do catálogo |
 | `forma.rs` | 4 | geometria finita de todo o catálogo, `Cena` determinística e SVG, acerto com furo e giro, ajustes |
 | `aparencia.rs` | 3 | cores, gradiente e limites, estilo do feather-draw |
-| `wordart.rs` | 2 | transformações do texto |
+| `wordart.rs` | 3 | transformações e estilos prontos do texto |
 | `svgpath.rs` | 3 | leitura de caminho SVG |
 | `icones.rs` | 4 | catálogo, busca, nomes antigos, categorias e cena do ícone |
 | `diagramas.rs` | 2 | diagramas por categoria e escala |

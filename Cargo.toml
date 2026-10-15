@@ -1,6 +1,6 @@
 [package]
 name = "feather-shapes"
-version = "0.1.0"
+version = "0.1.1"
 description = "Formas, ícones e SmartArt compartilhados da suíte FeatherOffice: catálogo de formas, geometria, aparência, operações booleanas, ícones Tabler e diagramas, entregues como Cena do feather-draw"
 authors = ["FeatherOffice"]
 edition = "2021"

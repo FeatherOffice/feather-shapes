@@ -9,21 +9,21 @@ exportação.
 É uma **biblioteca**, não um aplicativo e **não tem interface Iced**: cada
 aplicativo encaixa a forma no seu documento e a desenha na tela do seu jeito.
 A `feather-shapes` calcula a geometria e entrega uma `Cena` do
-[`feather-draw`](https://github.com/FeatherOffice/feather-draw) (hoje ainda
-chamado `featheroffice-drawing`), que sai em **tela**, **SVG** e **PDF** a
+[`feather-draw`](https://github.com/FeatherOffice/feather-draw), que sai em **tela**, **SVG** e **PDF** a
 partir das mesmas formas.
 
 > **Estado do documento.** Este README é a **especificação de suporte**: lista
 > todas as formas, todos os ícones e todos os layouts de SmartArt que a
 > biblioteca vai ter e todas as formas de personalização. A meta é **100%
 > personalizável**: nada de aparência fixa dentro do motor. Cada item traz o
-> estado real no código de hoje, que ainda vive no `featherslide-core` do
-> monorepo FeatherOffice (`featherslide/crates/featherslide-core/src`) e será
-> extraído para este repositório sob o nome `feather-shapes`.
+> estado real no código de hoje. Desde a v0.1.0 (14/10/2026) o código vive
+> neste repositório, extraído do `featherslide-core` do monorepo FeatherOffice;
+> o FeatherSlide já usa a biblioteca e guarda só o que é dele (`Elemento`,
+> `Sessao`, desfazer e o conversor para a `Primitiva` de desenho).
 >
 > | Marca | Significado |
 > |---|---|
-> | Pronto | existe no código atual (no FeatherSlide) e tem teste |
+> | Pronto | existe no código atual e tem teste |
 > | Parcial | existe uma parte: a geometria sem ajustes, o conector sem setas, o layout sem todas as variantes |
 > | Planejado | ainda não existe |
 >
@@ -78,7 +78,10 @@ A `feather-shapes` existe para três coisas:
 
 ## O que existe hoje (resumo honesto)
 
-Tudo o que está marcado como Pronto abaixo existe no `featherslide-core`:
+Tudo o que está marcado como Pronto abaixo existe neste repositório (os nomes de
+arquivo citados são os de origem no `featherslide-core`; hoje `formas.rs` é
+`poligonos.rs`, `novas_formas.rs` é `basicas.rs` e `outras_galerias.rs` é
+`galeria.rs`):
 
 - **Formas.** 7 básicas (Retângulo, Retângulo arredondado, Elipse, Setor,
   Triângulo, Seta, Linha) mais as listas `ADICIONAIS` (`formas.rs`) e
@@ -923,9 +926,9 @@ O que a biblioteca entrega a cada aplicativo:
 
 | Entrega | Para quê | Estado |
 |---|---|---|
-| `Forma::cena(...)` | desenho na tela, no SVG e no PDF | Parcial (o Slide desenha com a `Primitiva` própria) |
-| Conversor `Cena` para `Primitiva` | o Slide usar a biblioteca sem trocar o desenho | Planejado |
-| `Forma::acerto(x, y, tolerancia)` | teste de clique (dentro do preenchimento, sobre o contorno, sobre o texto) | Parcial (acerto por retângulo e por caminho no Slide) |
+| `Forma::cena(...)` | desenho na tela, no SVG e no PDF | Pronto (`Forma::cena` e `Forma::figuras`; o Slide segue desenhando com a `Primitiva` própria) |
+| Conversor `Cena` para `Primitiva` | o Slide usar a biblioteca sem trocar o desenho | Pronto (`featherslide_core::formas_comuns`, da `Geometria` para `Primitiva`) |
+| `Forma::acerto(x, y, tolerancia)` | teste de clique (dentro do preenchimento, sobre o contorno, sobre o texto) | Parcial (preenchimento com furos, contorno e giro prontos; sobre o texto, planejado) |
 | `Forma::alcas(...)` | alças de redimensionar, girar e ajustar, como dados para a GUI | Planejado |
 | Ajustes validados | `ajustar(n, valor)` com limite por forma | Parcial (Setor e retângulos) |
 | Caixa de texto interna | retângulo onde o texto da forma cabe (`rect` do DrawingML) | Planejado |
@@ -997,37 +1000,41 @@ Para desenvolver a biblioteca e o aplicativo lado a lado:
 feather-shapes = { path = "../feather-shapes" }
 ```
 
-> **API proposta.** Os nomes abaixo ainda não existem; ilustram o contrato da
-> seção 5 e podem mudar na extração, com aviso no `CHANGELOG`.
+Enquanto a tag não for publicada no GitHub, cada raiz de build do monorepo usa
+o `[patch]` acima com o caminho da cópia local.
+
+API da v0.1.0 (os nomes da seção 5 que ainda não existem, como `alcas`, estão
+marcados como Planejado):
 
 ```rust
-use feather_shapes::{Forma, Aparencia, Preenchimento, Contorno, Efeitos, Sombra, Cor};
+use feather_shapes::{Forma, TipoForma, Aparencia, Gradiente};
+use feather_shapes::feather_draw::{Retangulo, Cor};
 
-// Seta pentagonal com ajuste, gradiente, contorno tracejado e sombra.
-let forma = Forma::nova("homePlate")                    // Id estável: F0xx
-    .ajuste(0, 0.35)                                    // adj do DrawingML
-    .tamanho(240.0, 96.0)
-    .giro(-8.0)
-    .aparencia(Aparencia {
-        preenchimento: Preenchimento::gradiente_linear(
-            90.0,
-            &[(0.0, Cor::rgb(11, 87, 208)), (1.0, Cor::rgb(43, 122, 120))],
-        ),
-        contorno: Contorno::cor(Cor::rgb(24, 32, 48)).espessura(2.0).tracejado("traco-ponto"),
-        efeitos: Efeitos { sombra: Some(Sombra::externa(6.0, 3.0, 4.0)), ..Default::default() },
-        ..Default::default()
-    })
-    .texto("Etapa 1");
+// Forma do catálogo pelo id estável (aceita também `seta_direita` e `F072`).
+let mut forma = Forma::nova(TipoForma::pelo_id("seta-direita").unwrap());
+forma.aparencia = Aparencia {
+    gradiente: Some(Gradiente::default()),
+    contorno: "#182030".into(),
+    espessura: 2.0,
+    ..Aparencia::default()
+};
+forma.rotacao = -8.0;
+let caixa = Retangulo::novo(0.0, 0.0, 240.0, 96.0);
+let cena = forma.cena(caixa);                         // Cena do feather-draw
+let svg = feather_shapes::feather_draw::exportar_svg(&cena).unwrap();
+let dentro = forma.acerto(caixa, 120.0, 48.0, 3.0);   // teste de clique
 
-let cena = forma.cena(0.0, 0.0);                        // Cena do feather-draw
-let alcas = forma.alcas();                              // dados para a GUI desenhar
-let dentro = forma.acerto(120.0, 48.0, 3.0);            // teste de clique
+// Ícones: busca em pt ou en, sem acento; cena com cor e espessura.
+let icone = feather_shapes::icones::buscar("calendario", 1)[0];
+let cena_icone = feather_shapes::icones::cena(icone.id, caixa, Cor::rgb(26, 115, 232), 1.0);
 
-// Ícone e diagrama
-let icone = feather_shapes::icones::buscar("calendario").next();  // pt ou en, sem acento
-let diagrama = feather_shapes::smartart::Diagrama::novo("default") // layout D001
-    .item("Planejar").item("Fazer").item("Revisar");
-let formas_do_diagrama = diagrama.como_formas(480.0, 270.0);      // grupo de formas nativas
+// SmartArt: textos com nível viram formas posicionadas e conectores.
+use feather_shapes::arranjo::{diagrama, Arranjo};
+let d = diagrama(Arranjo::Organograma,
+    &[("Diretoria".into(), 0), ("Produto".into(), 1), ("Engenharia".into(), 1)],
+    [0.0, 0.0, 720.0, 360.0]).unwrap();
+// d.itens: ItemDiagrama (tipo, caixa, texto, cores, rótulo); d.conectores: (de, ate, estilo)
+let modelo = feather_shapes::diagramas::modelo(feather_shapes::Categoria::Ciclos, 0.0, 0.0, 480.0, 270.0);
 ```
 
 ## Desenvolvimento e testes
@@ -1037,24 +1044,26 @@ cargo test
 cargo clippy --all-targets
 ```
 
-Testes atuais do `featherslide-core` que **migrarão** para este repositório
-(contagem de `#[test]` por arquivo, conferida no código de origem):
+Os testes puros migraram do `featherslide-core` junto com o código (v0.1.0):
 
-| Arquivo de origem | Testes | O que cobre |
+| Arquivo | Testes | O que cobre |
 |---|---|---|
-| `formas.rs` | 3 | contorno e nome de todas as formas adicionais, polígonos e triângulo retângulo, direção das setas |
-| `outras_galerias.rs` | 4 | geometria de cada entrada das galerias, inserir e selecionar, conectores que seguem as formas, desfazer |
-| `booleanas.rs` | 3 | as 5 operações |
+| `tipo.rs` | 1 | ids, códigos `F0xx` e `prstGeom` únicos e de ida e volta |
+| `poligonos.rs` | 3 | contorno de todas as formas adicionais, polígonos e triângulo retângulo, direção das setas |
+| `basicas.rs` | 3 | formas com desenho próprio, furos do anel e da moldura, arco aberto |
+| `galeria.rs` | 3 | geometria de cada entrada das galerias, rota dos conectores, traço livre |
+| `caminho.rs` | 2 | caminhos SVG1 e anéis `u,v` de ida e volta |
+| `booleanas.rs` | 3 | as 5 operações, furos, interseção vazia e regiões do catálogo |
+| `forma.rs` | 4 | geometria finita de todo o catálogo, `Cena` determinística e SVG, acerto com furo e giro, ajustes |
+| `aparencia.rs` | 3 | cores, gradiente e limites, estilo do feather-draw |
 | `wordart.rs` | 2 | transformações do texto |
 | `svgpath.rs` | 3 | leitura de caminho SVG |
-| `novas_formas.rs` | 3 | formas com desenho próprio |
-| `icones.rs` | 4 | catálogo, busca, categorias |
-| `diagramas.rs` | 3 | diagramas por categoria |
-| `editor_diagrama.rs` | 8 | texto, itens, arranjo e nível |
-| `estilo_forma.rs` | 5 | preenchimento, gradiente, contorno, sombra |
+| `icones.rs` | 4 | catálogo, busca, nomes antigos, categorias e cena do ícone |
+| `diagramas.rs` | 2 | diagramas por categoria e escala |
+| `arranjo.rs` | 5 | níveis, excluir, mover, promover e rebaixar, limite de itens, arranjos dentro da área |
 
-Os testes que dependem de `Sessao` e `Mudanca` (desfazer) ficam no FeatherSlide
-e passam a chamar a biblioteca.
+Os testes que dependem de `Sessao` e `Mudanca` (desfazer) ficaram no FeatherSlide
+e chamam a biblioteca.
 
 Regras para contribuir:
 

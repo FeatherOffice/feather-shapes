@@ -1,6 +1,6 @@
 //! # feather-shapes
 //!
-//! Formas, ícones e SmartArt da suíte FeatherOffice, em Rust puro e sem interface: as mesmas
+//! Formas, ícones e SmartArt da suíte FeatherWorks, em Rust puro e sem interface: as mesmas
 //! formas no FeatherSheet, no FeatherDocs e no FeatherSlide, com a mesma geometria e a mesma
 //! aparência. A saída é uma `Cena` do [`feather_draw`], que vai para a tela, o SVG e o PDF.
 //!

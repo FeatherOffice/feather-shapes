@@ -1,12 +1,12 @@
 [package]
 name = "feather-shapes"
-version = "0.1.1"
-description = "Formas, ícones e SmartArt compartilhados da suíte FeatherOffice: catálogo de formas, geometria, aparência, operações booleanas, ícones Tabler e diagramas, entregues como Cena do feather-draw"
-authors = ["FeatherOffice"]
+version = "0.1.2"
+description = "Formas, ícones e SmartArt compartilhados da suíte FeatherWorks: catálogo de formas, geometria, aparência, operações booleanas, ícones Tabler e diagramas, entregues como Cena do feather-draw"
+authors = ["FeatherWorks"]
 edition = "2021"
 rust-version = "1.77.2"
 license = "GPL-3.0-only"
-repository = "https://github.com/FeatherOffice/feather-shapes"
+repository = "https://github.com/feather-works/feather-shapes"
 publish = false
 include = ["src/**", "dados/**", "tools/**", "Cargo.toml", "README.md", "LICENSE"]
 
@@ -15,6 +15,6 @@ name = "feather_shapes"
 
 # Rust puro, sem Iced: a forma sai como dados e como `Cena` do feather-draw.
 [dependencies]
-feather-draw = { git = "https://github.com/FeatherOffice/feather-draw", tag = "v0.1.1" }
+feather-draw = { git = "https://github.com/feather-works/feather-draw", tag = "v0.1.1" }
 serde = { version = "1", features = ["derive"] }
 

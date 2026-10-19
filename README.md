@@ -1,6 +1,6 @@
 # feather-shapes
 
-Motor de **formas, ícones e SmartArt 100% Rust** da suíte **FeatherOffice**: as
+Motor de **formas, ícones e SmartArt 100% Rust** da suíte **FeatherWorks**: as
 mesmas formas, os mesmos ícones e os mesmos diagramas no FeatherSheet (forma
 solta sobre a planilha), no FeatherDocs (forma no texto) e no FeatherSlide
 (forma no slide), com a mesma geometria, a mesma aparência e a mesma
@@ -9,7 +9,7 @@ exportação.
 É uma **biblioteca**, não um aplicativo e **não tem interface Iced**: cada
 aplicativo encaixa a forma no seu documento e a desenha na tela do seu jeito.
 A `feather-shapes` calcula a geometria e entrega uma `Cena` do
-[`feather-draw`](https://github.com/FeatherOffice/feather-draw), que sai em **tela**, **SVG** e **PDF** a
+[`feather-draw`](https://github.com/feather-works/feather-draw), que sai em **tela**, **SVG** e **PDF** a
 partir das mesmas formas.
 
 > **Estado do documento.** Este README é a **especificação de suporte**: lista
@@ -17,7 +17,7 @@ partir das mesmas formas.
 > biblioteca vai ter e todas as formas de personalização. A meta é **100%
 > personalizável**: nada de aparência fixa dentro do motor. Cada item traz o
 > estado real no código de hoje. Desde a v0.1.0 (14/10/2026) o código vive
-> neste repositório, extraído do `featherslide-core` do monorepo FeatherOffice;
+> neste repositório, extraído do `featherslide-core` do monorepo FeatherWorks;
 > o FeatherSlide já usa a biblioteca e guarda só o que é dele (`Elemento`,
 > `Sessao`, desfazer e o conversor para a `Primitiva` de desenho).
 >
@@ -364,7 +364,7 @@ Observações sobre o mapeamento do que existe hoje:
 | F185 | Botão Som | `actionButtonSound` | - | Planejado |
 | F186 | Botão Filme | `actionButtonMovie` | - | Planejado |
 
-### Extras FeatherOffice (sem equivalente no Office)
+### Extras FeatherWorks (sem equivalente no Office)
 
 | Id | Forma (pt-BR) | `prstGeom` (OOXML) | Ajustes (alças) | Estado |
 |---|---|---|---|---|
@@ -404,7 +404,7 @@ Observações sobre o mapeamento do que existe hoje:
 | Estrelas e faixas | 20 |
 | Textos explicativos (balões) | 16 |
 | Botões de ação | 12 |
-| Extras FeatherOffice (sem equivalente no Office) | 22 |
+| Extras FeatherWorks (sem equivalente no Office) | 22 |
 | **Total** | **208** |
 
 | Estado | Formas |
@@ -990,13 +990,13 @@ No `Cargo.toml` do aplicativo (por tag, no estilo do `feather-ui`):
 
 ```toml
 [dependencies]
-feather-shapes = { git = "https://github.com/FeatherOffice/feather-shapes", tag = "v0.1.0" }
+feather-shapes = { git = "https://github.com/feather-works/feather-shapes", tag = "v0.1.0" }
 ```
 
 Para desenvolver a biblioteca e o aplicativo lado a lado:
 
 ```toml
-[patch."https://github.com/FeatherOffice/feather-shapes"]
+[patch."https://github.com/feather-works/feather-shapes"]
 feather-shapes = { path = "../feather-shapes" }
 ```
 

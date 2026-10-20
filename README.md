@@ -1083,7 +1083,7 @@ Regras para contribuir:
 
 ## Licença
 
-GPL-3.0 (ver `LICENSE`). Os ícones são do projeto
+MIT (ver `LICENSE`). Os ícones são do projeto
 [Tabler Icons](https://tabler.io/icons) (MIT), copyright dos autores do Tabler;
 o texto da licença acompanha o pacote em `dados/TABLER-LICENSE.txt`. Texturas,
 padrões e paletas que entrarem terão atribuição própria em `dados/`.
